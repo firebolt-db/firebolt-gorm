@@ -1,0 +1,8 @@
+github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
+github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
+github.com/jinzhu/now v1.1.4 h1:tHnRBy1i5F2Dh8BAFxqFzxKqqvezXrL2OW1TnX+Mlas=
+github.com/jinzhu/now v1.1.4/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
+github.com/yuryfirebolt/firebolt-go-sdk v0.0.0-20220725090148-d2781833b1cd h1:4nWB/f95HzCu9GCOw+Y0AXAYeEIKWd+wvuzZsh/W1Xk=
+github.com/yuryfirebolt/firebolt-go-sdk v0.0.0-20220725090148-d2781833b1cd/go.mod h1:Ocl0P5JfwcthXOLTRPJj3LXnLuh6POWf8AG0mXL4kXI=
+gorm.io/gorm v1.23.8 h1:h8sGJ+biDgBA1AD1Ha9gFCx7h8npU7AsLdlkX0n2TpE=
+gorm.io/gorm v1.23.8/go.mod h1:l2lP/RyAtc1ynaTjFksBde/O8v9oOGIApu2/xRitmZk=
