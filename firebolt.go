@@ -50,14 +50,6 @@ func (dialector Dialector) Name() string {
 }
 
 func (dialector Dialector) Initialize(db *gorm.DB) (err error) {
-	// register callbacks
-	// callbacks.RegisterDefaultCallbacks(db, &callbacks.Config{
-	// 	CreateClauses: CreateClauses,
-	// 	QueryClauses:  QueryClauses,
-	// 	UpdateClauses: UpdateClauses,
-	// 	DeleteClauses: DeleteClauses,
-	// })
-
 	if dialector.Conn != nil {
 		db.ConnPool = dialector.Conn
 	} else {
@@ -65,10 +57,6 @@ func (dialector Dialector) Initialize(db *gorm.DB) (err error) {
 			return err
 		}
 	}
-
-	//	for k, v := range dialector.ClauseBuilders() {
-	//		db.ClauseBuilders[k] = v
-	//	}
 	return
 }
 
@@ -80,7 +68,6 @@ func (dialector Dialector) Migrator(db *gorm.DB) gorm.Migrator {
 				Dialector: dialector,
 			},
 		},
-		Dialector: dialector,
 	}
 }
 
