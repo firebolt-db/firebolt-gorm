@@ -5,6 +5,7 @@ import (
 
 	_ "github.com/yuryfirebolt/firebolt-go-sdk"
 	"gorm.io/gorm"
+
 	// 	"gorm.io/gorm/callbacks"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
@@ -18,7 +19,7 @@ type Config struct {
 
 type Dialector struct {
 	*Config
-	Conn gorm.ConnPool	
+	Conn gorm.ConnPool
 }
 
 const (
@@ -72,32 +73,31 @@ func (dialector Dialector) Initialize(db *gorm.DB) (err error) {
 }
 
 func (dialector Dialector) Migrator(db *gorm.DB) gorm.Migrator {
- 	return Migrator{
- 		Migrator: migrator.Migrator{
- 			Config: migrator.Config{
- 				DB:        db,
- 				Dialector: dialector,
- 			},
- 		},
- 		Dialector: dialector,
- 	}
+	return Migrator{
+		Migrator: migrator.Migrator{
+			Config: migrator.Config{
+				DB:        db,
+				Dialector: dialector,
+			},
+		},
+		Dialector: dialector,
+	}
 }
 
 func (dialector Dialector) DataTypeOf(field *schema.Field) string {
 	return "int"
 }
 
-
 func (dialector Dialector) DefaultValueOf(field *schema.Field) clause.Expression {
 	return clause.Expr{SQL: "DEFAULT"}
 }
 
 func (dialector Dialector) BindVarTo(writer clause.Writer, stmt *gorm.Statement, v interface{}) {
- 	writer.WriteByte('?')
+	writer.WriteByte('?')
 }
 
 func (dialector Dialector) QuoteTo(writer clause.Writer, str string) {
- 	writer.WriteString(str)
+	writer.WriteString(str)
 }
 
 func (dialector Dialector) Explain(sql string, vars ...interface{}) string {

@@ -111,6 +111,10 @@ func (m Migrator) ColumnTypes(value interface{}) ([]gorm.ColumnType, error) {
 
 		rawColumnTypes, err := rows.ColumnTypes()
 
+		if err != nil {
+			return err
+		}
+
 		if err := rows.Close(); err != nil {
 			return err
 		}
@@ -134,7 +138,6 @@ func (m Migrator) ColumnTypes(value interface{}) ([]gorm.ColumnType, error) {
 					&column.NameValue, &column.DefaultValueValue, &column.NullableValue, &column.DataTypeValue, &column.LengthValue, &column.ColumnTypeValue, &columnKey, &extraValue, &column.CommentValue, &column.DecimalSizeValue, &column.ScaleValue,
 				}
 			)
-
 
 			if scanErr := columns.Scan(values...); scanErr != nil {
 				return scanErr
