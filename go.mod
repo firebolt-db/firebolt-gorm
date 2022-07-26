@@ -1,4 +1,4 @@
-module github.io/firebolt-db/firebolt-gorm
+module github.com/firebolt-db/firebolt-gorm
 
 go 1.17
 
