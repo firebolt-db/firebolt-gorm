@@ -1,4 +1,4 @@
-module gorm.io/driver/firebolt
+module github.io/firebolt-db/firebolt-gorm
 
 go 1.17
 
