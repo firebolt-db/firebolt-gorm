@@ -3,7 +3,7 @@ package firebolt
 import (
 	"database/sql"
 
-	_ "github.com/yuryfirebolt/firebolt-go-sdk"
+	_ "github.com/firebolt-db/firebolt-go-sdk"
 	"gorm.io/gorm"
 
 	// 	"gorm.io/gorm/callbacks"
