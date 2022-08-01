@@ -6,7 +6,7 @@ import (
 	_ "github.com/firebolt-db/firebolt-go-sdk"
 	"gorm.io/gorm"
 
-	// 	"gorm.io/gorm/callbacks"
+	"gorm.io/gorm/callbacks"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/migrator"
@@ -50,14 +50,19 @@ func (dialector Dialector) Name() string {
 }
 
 func (dialector Dialector) Initialize(db *gorm.DB) (err error) {
-	if dialector.Conn != nil {
-		db.ConnPool = dialector.Conn
-	} else {
-		if db.ConnPool, err = sql.Open(driverName, dialector.DSN); err != nil {
-			return err
-		}
+
+	callbacks.RegisterDefaultCallbacks(db, &callbacks.Config{})
+
+	if db.ConnPool, err = sql.Open(driverName, dialector.DSN); err != nil {
+		return err
 	}
 	return
+}
+
+func (dialector Dialector) Apply(config gorm.Config) error {
+	// Firebolt doesn't support transactions
+	config.SkipDefaultTransaction = true
+	return nil
 }
 
 func (dialector Dialector) Migrator(db *gorm.DB) gorm.Migrator {
@@ -80,11 +85,11 @@ func (dialector Dialector) DefaultValueOf(field *schema.Field) clause.Expression
 }
 
 func (dialector Dialector) BindVarTo(writer clause.Writer, stmt *gorm.Statement, v interface{}) {
-	writer.WriteByte('?')
+	_ = writer.WriteByte('?')
 }
 
 func (dialector Dialector) QuoteTo(writer clause.Writer, str string) {
-	writer.WriteString(str)
+	_, _ = writer.WriteString(str)
 }
 
 func (dialector Dialector) Explain(sql string, vars ...interface{}) string {
