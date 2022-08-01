@@ -1,6 +1,6 @@
 module github.com/firebolt-db/firebolt-gorm
 
-go 1.17
+go 1.18
 
 require (
 	github.com/firebolt-db/firebolt-go-sdk v0.0.0-20220726084108-24170b57d0a8

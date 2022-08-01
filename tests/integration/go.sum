@@ -1,0 +1,12 @@
+github.com/firebolt-db/firebolt-go-sdk v0.0.0-20220726084108-24170b57d0a8/go.mod h1:tLTsvRQJtVyjqNXovmjx85O6oYOce6ay4/PbKN5ucvc=
+github.com/firebolt-db/firebolt-go-sdk v0.0.0-20220728145045-3cb1d41fcdbb h1:2YLae/wRckIBPBm6kYQ6UQywqdTHxSgzQuE+tnuMpsc=
+github.com/firebolt-db/firebolt-go-sdk v0.0.0-20220728145045-3cb1d41fcdbb/go.mod h1:tLTsvRQJtVyjqNXovmjx85O6oYOce6ay4/PbKN5ucvc=
+github.com/firebolt-db/firebolt-gorm v0.0.0-20220726093105-8fa13df86673 h1:3pyhGyAphW8Gl0+9HRmZfTK4P32fiqpR5NG2z8acokc=
+github.com/firebolt-db/firebolt-gorm v0.0.0-20220726093105-8fa13df86673/go.mod h1:PN3WIQpGDiDdDRdzJpey8J/eWPuYvFrfBzfNifU6fAQ=
+github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
+github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
+github.com/jinzhu/now v1.1.4/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
+github.com/jinzhu/now v1.1.5 h1:/o9tlHleP7gOFmsnYNz3RGnqzefHA47wQpKrrdTIwXQ=
+github.com/jinzhu/now v1.1.5/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
+gorm.io/gorm v1.23.8 h1:h8sGJ+biDgBA1AD1Ha9gFCx7h8npU7AsLdlkX0n2TpE=
+gorm.io/gorm v1.23.8/go.mod h1:l2lP/RyAtc1ynaTjFksBde/O8v9oOGIApu2/xRitmZk=
