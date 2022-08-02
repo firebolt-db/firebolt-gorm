@@ -1,12 +1,18 @@
 package firebolt_integration
 
-import "testing"
+import (
+	"testing"
 
-type selectResult struct {
-	field int
-}
+	"github.com/stretchr/testify/assert"
+)
 
-func TestSimpleQuery(t *testing.T) {
-	r := DB.Raw("select 1").Row()
-	t.Logf("select 1 returned %v", r)
+func TestSimpleRawQuery(t *testing.T) {
+	sql := "select 1 as id, 'name' as name"
+	var id int
+	var name string
+	err := DB.Raw(sql).Row().Scan(&id, &name)
+	if assert.NoError(t, err) {
+		assert.Equal(t, id, 1, "Invalid id returned")
+		assert.Equal(t, name, "name", "Invalid name returned")
+	}
 }
