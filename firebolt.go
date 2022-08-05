@@ -2,6 +2,7 @@ package firebolt
 
 import (
 	"database/sql"
+	"errors"
 
 	_ "github.com/firebolt-db/firebolt-go-sdk"
 	"gorm.io/gorm"
@@ -28,7 +29,7 @@ const (
 
 var (
 	// CreateClauses create clauses
-	CreateClauses = []string{"INSERT", "VALUES", "ON CONFLICT"}
+	CreateClauses = []string{"INSERT", "VALUES"}
 	// QueryClauses query clauses
 	QueryClauses = []string{}
 	// UpdateClauses update clauses
@@ -51,15 +52,21 @@ func (dialector Dialector) Name() string {
 
 func (dialector Dialector) Initialize(db *gorm.DB) (err error) {
 
-	callbacks.RegisterDefaultCallbacks(db, &callbacks.Config{})
+	callbacks.RegisterDefaultCallbacks(db, &callbacks.Config{
+		CreateClauses: CreateClauses,
+	})
 
 	if db.ConnPool, err = sql.Open(driverName, dialector.DSN); err != nil {
 		return err
 	}
+
+	for k, v := range dialector.clauseBuilders() {
+		db.ClauseBuilders[k] = v
+	}
 	return
 }
 
-func (dialector Dialector) Apply(config gorm.Config) error {
+func (dialector Dialector) Apply(config *gorm.Config) error {
 	// Firebolt doesn't support transactions
 	config.SkipDefaultTransaction = true
 	return nil
@@ -94,4 +101,25 @@ func (dialector Dialector) QuoteTo(writer clause.Writer, str string) {
 
 func (dialector Dialector) Explain(sql string, vars ...interface{}) string {
 	return logger.ExplainSQL(sql, nil, `'`, vars...)
+}
+
+const (
+	// ClauseValues for clause.ClauseBuilder VALUES key
+	ClauseValues = "VALUES"
+)
+
+func (dialector Dialector) clauseBuilders() map[string]clause.ClauseBuilder {
+	clauseBuilders := map[string]clause.ClauseBuilder{
+		ClauseValues: func(c clause.Clause, builder clause.Builder) {
+			if values, ok := c.Expression.(clause.Values); ok && len(values.Columns) == 0 {
+				if st, ok := builder.(*gorm.Statement); ok {
+					_ = st.AddError(errors.New("Empty insert statements are not supported by Firebolt"))
+				}
+				return
+			}
+			c.Build(builder)
+		},
+	}
+
+	return clauseBuilders
 }
