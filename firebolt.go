@@ -3,6 +3,7 @@ package firebolt
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	_ "github.com/firebolt-db/firebolt-go-sdk"
 	"gorm.io/gorm"
@@ -84,7 +85,19 @@ func (dialector Dialector) Migrator(db *gorm.DB) gorm.Migrator {
 }
 
 func (dialector Dialector) DataTypeOf(field *schema.Field) string {
-	return "int"
+	switch field.DataType {
+	case schema.Bool:
+		return "BOOLEAN"
+	case schema.Int, schema.Uint:
+		return "INT"
+	case schema.Float:
+		return "FLOAT"
+	case schema.String:
+		return "STRING"
+	case schema.Time:
+		return "DATETIME"
+	}
+	return fmt.Sprintf("UNKNOWN DATETYPE: %s", field.DataType)
 }
 
 func (dialector Dialector) DefaultValueOf(field *schema.Field) clause.Expression {
@@ -96,7 +109,9 @@ func (dialector Dialector) BindVarTo(writer clause.Writer, stmt *gorm.Statement,
 }
 
 func (dialector Dialector) QuoteTo(writer clause.Writer, str string) {
+	_ = writer.WriteByte('"')
 	_, _ = writer.WriteString(str)
+	_ = writer.WriteByte('"')
 }
 
 func (dialector Dialector) Explain(sql string, vars ...interface{}) string {
