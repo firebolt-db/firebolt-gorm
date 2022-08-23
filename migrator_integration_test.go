@@ -13,13 +13,19 @@ import (
 	"gorm.io/gorm"
 )
 
+type MockCompany struct {
+	ID   int
+	Name string
+}
+
 type MockUser struct {
 	gorm.Model
+	ID        uint
 	Name      string `gorm:"primarykey"`
 	Age       uint
 	Birthday  time.Time
 	CompanyID int
-	ManagerID uint
+	Company   *MockCompany
 	Active    bool
 }
 
@@ -101,7 +107,7 @@ func init() {
 		panic(err)
 	}
 
-	allModels := []interface{}{&MockUser{}}
+	allModels := []interface{}{&MockUser{}, &MockCompany{}}
 
 	if err = mockDB.Migrator().DropTable(allModels...); err != nil {
 		panic(fmt.Sprintf("Failed to drop table, got error %v\n", err))

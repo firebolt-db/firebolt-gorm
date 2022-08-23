@@ -35,14 +35,14 @@ func AssertEqualUsers(t *testing.T, gotUsers, expectedUsers []MockUser) {
 
 func TestCount(t *testing.T) {
 	var (
-		user1                 = MockUser{Name: "count-1", Age: 18, Birthday: time.Now(), Active: true}
-		user2                 = MockUser{Name: "count-2", Age: 18, Birthday: time.Now(), Active: true}
-		user3                 = MockUser{Name: "count-3", Age: 18, Birthday: time.Now(), Active: true}
+		user1                 = MockUser{ID: 1, Name: "count-1", Age: 18, Birthday: time.Now(), Active: true}
+		user2                 = MockUser{ID: 2, Name: "count-2", Age: 18, Birthday: time.Now(), Active: true}
+		user3                 = MockUser{ID: 3, Name: "count-3", Age: 18, Birthday: time.Now(), Active: true}
 		users                 []MockUser
 		count, count1, count2 int64
 	)
 
-	mockDB.Save(&user1).Save(&user2).Save(&user3)
+	mockDB.Create([]MockUser{user1, user2, user3})
 
 	if err := mockDB.Where("name = ?", user1.Name).Or("name = ?", user3.Name).Find(&users).Count(&count).Error; err != nil {
 		t.Errorf(fmt.Sprintf("Count should work, but got err %v", err))
