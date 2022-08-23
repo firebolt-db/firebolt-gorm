@@ -26,9 +26,9 @@ func (m Migrator) CreateTable(models ...interface{}) error {
 		if err := m.RunWithValue(model, func(stmt *gorm.Statement) (err error) {
 			// Build columns
 			columnSlice := make([]string, 0, len(stmt.Schema.DBNames))
-			for _, dbName := range stmt.Schema.DBNames {
-				field := stmt.Schema.FieldsByDBName[dbName]
-				columnSlice = append(columnSlice, fmt.Sprintf("\"%s\" %s", dbName, m.FullDataTypeOf(field).SQL))
+			for _, dbFieldName := range stmt.Schema.DBNames {
+				field := stmt.Schema.FieldsByDBName[dbFieldName]
+				columnSlice = append(columnSlice, fmt.Sprintf("\"%s\" %s", dbFieldName, m.FullDataTypeOf(field).SQL))
 			}
 
 			// Build primary index
