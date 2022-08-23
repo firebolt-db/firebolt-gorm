@@ -5,11 +5,23 @@ package firebolt
 
 import (
 	"fmt"
-	"golang.org/x/exp/slices"
-	"gorm.io/gorm"
 	"os"
 	"testing"
+	"time"
+
+	"golang.org/x/exp/slices"
+	"gorm.io/gorm"
 )
+
+type MockUser struct {
+	gorm.Model
+	Name      string `gorm:"primarykey"`
+	Age       uint
+	Birthday  time.Time
+	CompanyID int
+	ManagerID uint
+	Active    bool
+}
 
 type MockModel struct {
 	Code string `gorm:"primarykey"`
@@ -87,5 +99,21 @@ func init() {
 	var err error
 	if mockDB, err = gorm.Open(Open(dsn), &gorm.Config{}); err != nil {
 		panic(err)
+	}
+
+	allModels := []interface{}{&MockUser{}}
+
+	if err = mockDB.Migrator().DropTable(allModels...); err != nil {
+		panic(fmt.Sprintf("Failed to drop table, got error %v\n", err))
+	}
+
+	if err = mockDB.AutoMigrate(allModels...); err != nil {
+		panic(fmt.Sprintf("Failed to auto migrate, but got error %v\n", err))
+	}
+
+	for _, m := range allModels {
+		if !mockDB.Migrator().HasTable(m) {
+			panic(fmt.Sprintf("Failed to create table for %#v\n", m))
+		}
 	}
 }
