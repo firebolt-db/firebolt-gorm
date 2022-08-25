@@ -42,7 +42,7 @@ func TestJoinsForSlice(t *testing.T) {
 
 	mockDB.Create(&users)
 
-	var userIDs []uint
+	var userIDs []int
 	for _, user := range users {
 		userIDs = append(userIDs, user.ID)
 	}

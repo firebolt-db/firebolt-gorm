@@ -20,9 +20,9 @@ type MockCompany struct {
 
 type MockUser struct {
 	gorm.Model
-	ID        uint
+	ID        int
 	Name      string `gorm:"primarykey"`
-	Age       uint
+	Age       int
 	Birthday  time.Time
 	CompanyID int
 	Company   *MockCompany
