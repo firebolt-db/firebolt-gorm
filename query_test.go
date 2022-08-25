@@ -530,16 +530,18 @@ func TestPluckWithSelect(t *testing.T) {
 func TestSelectWithVariables(t *testing.T) {
 	mockDB.Create(&MockUser{ID: 28, Name: "select_with_variables"})
 
-	rows, _ := mockDB.Table("mock_users").Where("name = ?", "select_with_variables").Select("? as fake", gorm.Expr("name")).Rows()
-
-	if !rows.Next() {
-		t.Errorf("Should have returned at least one row")
+	if rows, err := mockDB.Table("mock_users").Where("name = ?", "select_with_variables").Select("? as fake", gorm.Expr("name")).Rows(); err != nil {
+		t.Fatalf("query returned an error: %v", err)
 	} else {
-		columns, _ := rows.Columns()
-		assert.Equal(t, columns, []string{"fake"})
-	}
+		if !rows.Next() {
+			t.Errorf("Should have returned at least one row")
+		} else {
+			columns, _ := rows.Columns()
+			assert.Equal(t, columns, []string{"fake"})
+		}
 
-	rows.Close()
+		rows.Close()
+	}
 }
 
 func TestSelectWithArrayInput(t *testing.T) {
@@ -652,9 +654,12 @@ func TestLimit(t *testing.T) {
 }
 
 func TestOffset(t *testing.T) {
+	mockUsers := make([]*MockUser, 0, 20)
 	for i := 0; i < 20; i++ {
-		mockDB.Create(&MockUser{Name: fmt.Sprintf("OffsetMockUser%v", i)})
+		mockUsers = append(mockUsers, &MockUser{Name: fmt.Sprintf("OffsetMockUser%v", i)})
 	}
+	mockDB.Create(&mockUsers)
+
 	var MockUsers1, MockUsers2, MockUsers3, MockUsers4 []MockUser
 
 	mockDB.Limit(100).Where("name like ?", "OffsetMockUser%").Order("age desc").Find(&MockUsers1).Offset(3).Find(&MockUsers2).Offset(5).Find(&MockUsers3).Offset(-1).Find(&MockUsers4)

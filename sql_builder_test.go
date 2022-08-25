@@ -107,9 +107,9 @@ func TestRowsWithGroup(t *testing.T) {
 
 func TestQueryRaw(t *testing.T) {
 	users := []*MockUser{
-		&MockUser{Name: "row_query_user"},
-		&MockUser{Name: "row_query_user"},
-		&MockUser{Name: "row_query_user"},
+		&MockUser{ID: 50, Name: "row_query_user"},
+		&MockUser{ID: 51, Name: "row_query_user"},
+		&MockUser{ID: 52, Name: "row_query_user"},
 	}
 	mockDB.Create(&users)
 
