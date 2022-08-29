@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 
 	_ "github.com/firebolt-db/firebolt-go-sdk"
 	"gorm.io/gorm"
@@ -111,8 +112,18 @@ func (dialector Dialector) BindVarTo(writer clause.Writer, stmt *gorm.Statement,
 func (dialector Dialector) QuoteTo(writer clause.Writer, str string) {
     // Quoting table and column names
 	_ = writer.WriteByte('"')
-	_, _ = writer.WriteString(str)
-	_ = writer.WriteByte('"')
+	if strings.Contains(str, ".") {
+		for idx, str := range strings.Split(str, ".") {
+			if idx > 0 {
+				_, _ = writer.WriteString(".\"")
+			}
+			_, _ = writer.WriteString(str)
+			_ = writer.WriteByte('"')
+		}
+	} else {
+		_, _ = writer.WriteString(str)
+		_ = writer.WriteByte('"')
+	}
 }
 
 func (dialector Dialector) Explain(sql string, vars ...interface{}) string {

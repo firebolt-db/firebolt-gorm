@@ -2,14 +2,41 @@ package firebolt
 
 import (
 	"fmt"
+	"strings"
+
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"gorm.io/gorm/migrator"
 	"gorm.io/gorm/schema"
-	"strings"
 )
 
 type Migrator struct {
 	migrator.Migrator
+}
+
+// FullDataTypeOf returns field's db full data type
+func (m Migrator) FullDataTypeOf(field *schema.Field) (expr clause.Expr) {
+	expr.SQL = m.DataTypeOf(field)
+
+	if !field.NotNull {
+		expr.SQL += " NULL"
+	}
+
+	if field.Unique {
+		expr.SQL += " UNIQUE"
+	}
+
+	if field.HasDefaultValue && (field.DefaultValueInterface != nil || field.DefaultValue != "") {
+		if field.DefaultValueInterface != nil {
+			defaultStmt := &gorm.Statement{Vars: []interface{}{field.DefaultValueInterface}}
+			m.Dialector.BindVarTo(defaultStmt, defaultStmt, field.DefaultValueInterface)
+			expr.SQL += " DEFAULT " + m.Dialector.Explain(defaultStmt.SQL.String(), field.DefaultValueInterface)
+		} else if field.DefaultValue != "(-)" {
+			expr.SQL += " DEFAULT " + field.DefaultValue
+		}
+	}
+
+	return
 }
 
 // Database
@@ -33,9 +60,7 @@ func (m Migrator) CreateTable(models ...interface{}) error {
 
 			// Build primary index
 			primaryIndexSlice := make([]string, 0, len(stmt.Schema.PrimaryFieldDBNames))
-			for _, indexName := range stmt.Schema.PrimaryFieldDBNames {
-				primaryIndexSlice = append(primaryIndexSlice, indexName)
-			}
+			primaryIndexSlice = append(primaryIndexSlice, stmt.Schema.PrimaryFieldDBNames...)
 
 			createTableSQL := fmt.Sprintf("CREATE FACT TABLE %s (%s) PRIMARY INDEX %s", stmt.Table, strings.Join(columnSlice, ","), strings.Join(primaryIndexSlice, ","))
 			fmt.Printf("%s", createTableSQL)
@@ -50,13 +75,13 @@ func (m Migrator) CreateTable(models ...interface{}) error {
 
 func (m Migrator) HasTable(value interface{}) bool {
 	var count int64
-	m.RunWithValue(value, func(stmt *gorm.Statement) error {
+	err := m.RunWithValue(value, func(stmt *gorm.Statement) error {
 
 		return m.DB.Raw(
 			"SELECT count(*) FROM information_schema.tables WHERE table_name = ?",
 			stmt.Table).Row().Scan(&count)
 	})
-	return count > 0
+	return err == nil && count > 0
 }
 
 func (m Migrator) GetTables() (tableList []string, err error) {
@@ -103,7 +128,7 @@ func (m Migrator) MigrateColumn(dst interface{}, field *schema.Field, columnType
 
 func (m Migrator) HasColumn(dst interface{}, field string) bool {
 	var count int64
-	m.RunWithValue(dst, func(stmt *gorm.Statement) error {
+	err := m.RunWithValue(dst, func(stmt *gorm.Statement) error {
 		name := field
 
 		if stmt.Schema != nil {
@@ -118,7 +143,7 @@ func (m Migrator) HasColumn(dst interface{}, field string) bool {
 		).Row().Scan(&count)
 	})
 
-	return count > 0
+	return err == nil && count > 0
 }
 
 // Indexes
