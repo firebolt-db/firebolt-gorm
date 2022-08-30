@@ -110,7 +110,7 @@ func (dialector Dialector) BindVarTo(writer clause.Writer, stmt *gorm.Statement,
 }
 
 func (dialector Dialector) QuoteTo(writer clause.Writer, str string) {
-    // Quoting table and column names
+	// Quoting table and column names
 	_ = writer.WriteByte('"')
 	if strings.Contains(str, ".") {
 		for idx, str := range strings.Split(str, ".") {
