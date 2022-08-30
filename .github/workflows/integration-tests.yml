@@ -43,4 +43,4 @@ jobs:
           FIREBOLT_ENDPOINT: "api.dev.firebolt.io"
           ACCOUNT_NAME: "firebolt"
         run: |
-          go test . -v --tags=integration
+          go test . -v --tags=integration --timeout 3600s
