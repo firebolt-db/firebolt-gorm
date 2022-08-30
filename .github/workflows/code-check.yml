@@ -15,9 +15,9 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.19.0'
+          go-version: '1.17.0'
         
-      - name: Install goling
+      - name: Install golint
         run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.46.2
     
       - name: Install gocyclo
