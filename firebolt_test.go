@@ -1,9 +1,10 @@
 package firebolt
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
-	"testing"
 )
 
 func runTestQuoteTo(t *testing.T, input, expected string) {
