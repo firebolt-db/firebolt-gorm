@@ -23,7 +23,7 @@ account_name := "my_firebolt_account"
 conn_string := fmt.Sprintf("firebolt://%s:%s@%s/%s?account_name=%s", username, password, database, engine_name, account_name)
 
 // Connect to Firebolt
-Db, err := gorm.Open(firebolt.Open(dsn), &gorm.Config{NamingStrategy: schema.NamingStrategy{SingularTable: true}})
+Db, err := gorm.Open(firebolt.Open(dsn), &gorm.Config{})
 if err != nil {
     log.Panicf("Failed to connect to a database: %w", err)
 }
