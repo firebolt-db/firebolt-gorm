@@ -129,12 +129,15 @@ func TestRowsWithGroup(t *testing.T) {
 }
 
 func TestQueryRaw(t *testing.T) {
+	mockDB.Raw("DELETE FROM mock_users").Rows()
 	users := []*MockUser{
 		&MockUser{ID: 50, Name: "row_query_user"},
 		&MockUser{ID: 51, Name: "row_query_user"},
 		&MockUser{ID: 52, Name: "row_query_user"},
 	}
-	mockDB.Create(&users)
+	if err := mockDB.Create(&users).Error; err != nil {
+		t.Fatalf("Failed to create users, got %v", err)
+	}
 
 	var user MockUser
 	mockDB.Raw("select * from mock_users WHERE id = ?", users[1].ID).First(&user)

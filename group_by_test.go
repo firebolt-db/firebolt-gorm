@@ -121,4 +121,17 @@ func TestGroupBy(t *testing.T) {
 	if name != "groupby" || active != true || total != 40 {
 		t.Errorf("group by two columns, name %v, age %v, active: %v", name, total, active)
 	}
+
+	// GROUP BY ALL
+	res, err := mockDB.Model(&MockUser{}).Select("name, active, sum(age)").Where("name = ?", "groupby").Group("ALL").Rows()
+	if err != nil {
+		t.Errorf("no error should happen during group by all, but got %v", err)
+	}
+	count := 0
+	for res.Next() {
+		count++
+	}
+	if count != 2 {
+		t.Errorf("group by all should return 2 rows, but got %v", count)
+	}
 }
