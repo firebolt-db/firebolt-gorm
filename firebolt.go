@@ -96,7 +96,7 @@ func (dialector Dialector) DataTypeOf(field *schema.Field) string {
 	case schema.String:
 		return "STRING"
 	case schema.Time:
-		return "DATETIME"
+		return "TIMESTAMPTZ"
 	}
 	return fmt.Sprintf("UNKNOWN DATETYPE: %s", field.DataType)
 }
@@ -132,7 +132,8 @@ func (dialector Dialector) Explain(sql string, vars ...interface{}) string {
 
 const (
 	// ClauseValues for clause.ClauseBuilder VALUES key
-	ClauseValues = "VALUES"
+	ClauseValues  = "VALUES"
+	ClauseGroupBy = "GROUP BY"
 )
 
 func (dialector Dialector) clauseBuilders() map[string]clause.ClauseBuilder {
@@ -143,6 +144,15 @@ func (dialector Dialector) clauseBuilders() map[string]clause.ClauseBuilder {
 					_ = st.AddError(errors.New("Empty insert statements are not supported by Firebolt"))
 				}
 				return
+			}
+			c.Build(builder)
+		},
+		ClauseGroupBy: func(c clause.Clause, builder clause.Builder) {
+			if groupBy, ok := c.Expression.(clause.GroupBy); ok {
+				if len(groupBy.Columns) == 1 && strings.ToLower(groupBy.Columns[0].Name) == "all" {
+					// If we want to group by all, replace groupBy expression with raw "GROUP BY ALL" sql
+					c.Expression = clause.Expr{SQL: "ALL"}
+				}
 			}
 			c.Build(builder)
 		},
