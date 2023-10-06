@@ -90,13 +90,15 @@ func (dialector Dialector) DataTypeOf(field *schema.Field) string {
 	case schema.Bool:
 		return "BOOLEAN"
 	case schema.Int, schema.Uint:
-		return "INT"
+		return "LONG"
 	case schema.Float:
-		return "FLOAT"
+		return "DOUBLE"
 	case schema.String:
 		return "STRING"
 	case schema.Time:
 		return "TIMESTAMPTZ"
+	case schema.Bytes:
+		return "BYTEA"
 	}
 	return fmt.Sprintf("UNKNOWN DATETYPE: %s", field.DataType)
 }
