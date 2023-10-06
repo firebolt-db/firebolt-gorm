@@ -132,6 +132,6 @@ func TestGroupBy(t *testing.T) {
 		count++
 	}
 	if count != 2 {
-		t.Errorf("group by all should return 4 rows, but got %v", count)
+		t.Errorf("group by all should return 2 rows, but got %v", count)
 	}
 }
